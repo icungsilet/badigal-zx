@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>megadon</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+body{
+background:#000;
+font-family:Arial, sans-serif;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.live-container{
+
+width:100%;
+max-width:430px;
+aspect-ratio:9/16;
+
+position:relative;
+overflow:hidden;
+background:#000;
+
+border-radius:12px;
+
+}
+
+.live-video{
+
+position:absolute;
+width:100%;
+height:100%;
+
+object-fit:cover;
+
+}
+
+.play-button{
+
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+
+background:rgba(0,0,0,0.5);
+border-radius:50%;
+padding:18px;
+
+cursor:pointer;
+z-index:5;
+
+}
+
+.play-button svg{
+
+width:32px;
+height:32px;
+fill:#fff;
+
+}
+
+.loader{
+
+position:absolute;
+top:50%;
+left:50%;
+
+transform:translate(-50%,-50%);
+
+border:4px solid rgba(255,255,255,0.3);
+border-top:4px solid #fff;
+
+border-radius:50%;
+
+width:40px;
+height:40px;
+
+animation:spin 1s linear infinite;
+
+display:none;
+
+z-index:5;
+
+}
+
+@keyframes spin{
+
+0%{transform:translate(-50%,-50%) rotate(0deg);}
+100%{transform:translate(-50%,-50%) rotate(360deg);}
+
+}
+
+.header{
+
+position:absolute;
+top:10px;
+left:10px;
+
+display:flex;
+align-items:center;
+
+color:#fff;
+
+}
+
+.header img{
+
+width:40px;
+height:40px;
+
+border-radius:50%;
+border:2px solid #fff;
+
+margin-right:8px;
+
+}
+
+.header-info .name{
+
+font-weight:bold;
+font-size:14px;
+
+}
+
+.header-info .id{
+
+font-size:12px;
+opacity:.8;
+
+}
+
+.gift-banner{
+
+position:absolute;
+top:60px;
+left:10px;
+
+background:linear-gradient(to right,#ff3c5f,#ff7b8a);
+
+padding:6px 14px;
+
+border-radius:30px;
+
+color:#fff;
+
+font-size:12px;
+
+}
+
+.chat-box{
+
+position:absolute;
+bottom:120px;
+left:10px;
+
+width:calc(100% - 20px);
+
+max-height:180px;
+
+overflow-y:auto;
+
+padding:8px;
+
+background:rgba(0,0,0,0.3);
+
+border-radius:12px;
+
+}
+
+.chat-message{
+
+background:rgba(255,255,255,0.15);
+
+padding:6px 14px;
+
+border-radius:20px;
+
+color:#fff;
+
+font-size:13px;
+
+width:fit-content;
+max-width:80%;
+
+margin-bottom:6px;
+
+}
+
+.chat-input-container{
+
+position:absolute;
+bottom:60px;
+left:10px;
+
+width:calc(100% - 20px);
+
+display:none;
+
+background:rgba(0,0,0,0.6);
+
+border-radius:25px;
+
+padding:8px;
+
+}
+
+.chat-input{
+
+flex:1;
+border:none;
+background:transparent;
+
+color:#fff;
+
+outline:none;
+
+padding:6px;
+
+}
+
+.send-button{
+
+width:36px;
+height:36px;
+
+border-radius:50%;
+
+border:none;
+
+background:#ff3c5f;
+
+color:#fff;
+
+cursor:pointer;
+
+}
+
+.bottom-bar{
+
+position:absolute;
+bottom:10px;
+
+width:100%;
+
+display:flex;
+justify-content:space-around;
+
+}
+
+.bottom-bar img{
+
+width:34px;
+height:34px;
+
+background:#ff3c5f;
+
+padding:8px;
+
+border-radius:50%;
+
+cursor:pointer;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="live-container">
+
+<img class="live-video" src="https://icungsilet.github.io/badigal-zx/bkzstar.jpg">
+
+<div class="play-button" onclick="startBuffering()">
+
+<svg viewBox="0 0 24 24">
+<path d="M8 5v14l11-7z"/>
+</svg>
+
+</div>
+
+<div class="loader" id="loader"></div>
+
+<div class="header">
+
+<img src="https://icungsilet.github.io/badigal-zx/bkzstar.jpg">
+
+<div class="header-info">
+<div class="name">Outingsprees Shawna</div>
+<div class="id">ID:871911</div>
+</div>
+
+</div>
+
+<div class="gift-banner">🎁 Just-G won 500x diamonds with you!</div>
+
+<div class="chat-box">
+<div id="chatMessages"></div>
+</div>
+
+<div class="chat-input-container" id="chatInputContainer">
+
+<input type="text" class="chat-input" id="userMessage" placeholder="Type message">
+
+<button class="send-button" onclick="redirectDirectly()">➤</button>
+
+</div>
+
+<div class="bottom-bar">
+
+<img src="https://cdn-icons-png.flaticon.com/512/889/889140.png">
+
+<img src="https://cdn-icons-png.flaticon.com/512/2462/2462719.png" onclick="toggleChatInput()">
+
+<img src="https://cdn-icons-png.flaticon.com/512/482/482661.png">
+
+<img src="https://cdn-icons-png.flaticon.com/512/709/709496.png">
+
+<img src="https://cdn-icons-png.flaticon.com/512/1828/1828778.png">
+
+</div>
+
+</div>
+
+<script>
+
+function startBuffering(){
+
+document.querySelector(".play-button").style.display="none";
+document.getElementById("loader").style.display="block";
+
+setTimeout(function(){
+
+window.open("https://achelessvase.com/f9hhubydk?key=b50f66e969f66dabeb91f9dc553c10cf","_blank");
+
+document.querySelector(".play-button").style.display="block";
+document.getElementById("loader").style.display="none";
+
+},1000);
+
+}
+
+function toggleChatInput(){
+
+const chat=document.getElementById("chatInputContainer");
+
+if(chat.style.display==="flex"){
+
+chat.style.display="none";
+
+}else{
+
+chat.style.display="flex";
+
+}
+
+}
+
+function redirectDirectly(){
+
+window.location.href="https://achelessvase.com/f9hhubydk?key=b50f66e969f66dabeb91f9dc553c10cf";
+
+}
+
+const chatData=[
+
+"💬 Emily: omg you’re so beautiful 😍",
+"💬 Michael: wow she’s absolutely stunning",
+"💬 Jessica: that smile is so gorgeous ✨",
+"💬 Daniel joined the LIVE",
+"💬 Ashley: literally the prettiest girl ever ❤️",
+"💬 Ryan: I can't stop watching this",
+"💬 Olivia: your beauty is unreal 😍",
+"💬 Ethan: wow those eyes are amazing",
+"💬 Madison: queen energy 👑",
+"💬 Noah: she's so cute omg",
+"💬 Sophia: that smile just made my day",
+"💬 Liam: wow you're glowing ✨",
+"💬 Chloe: honestly so stunning",
+"💬 Jacob: angel vibes for real 😍"
+
+];
+
+let i=0;
+
+setInterval(()=>{
+
+if(i<chatData.length){
+
+let div=document.createElement("div");
+
+div.className="chat-message";
+
+div.textContent=chatData[i];
+
+document.getElementById("chatMessages").appendChild(div);
+
+i++;
+
+}
+
+},1500);
+
+</script>
+
+<!-- Histats.com START -->
+
+<script type="text/javascript">
+var _Hasync= _Hasync|| [];
+_Hasync.push(['Histats.start', '1,4716773,4,9,110,60,00010000']);
+_Hasync.push(['Histats.fasi', '1']);
+_Hasync.push(['Histats.track_hits', '']);
+(function() {
+var hs = document.createElement('script'); 
+hs.type = 'text/javascript'; 
+hs.async = true;
+hs.src = ('//s10.histats.com/js15_as.js');
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+})();
+</script>
+
+<noscript>
+<a href="/" target="_blank">
+<img src="//sstatic1.histats.com/0.gif?4716773&101" alt="">
+</a>
+</noscript>
+
+<!-- Histats.com END -->
+
+</body>
+</html>
